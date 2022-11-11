@@ -9,11 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^1.9.0",
+    "nanoid": "^4.0.0",
     "next": "13.0.2",
     "rc-queue-anim": "^2.0.0",
     "rc-tween-one": "^3.0.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-redux": "^8.0.5",
     "styled-components": "^5.3.6"
   }
 }

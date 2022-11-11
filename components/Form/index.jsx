@@ -1,8 +1,14 @@
 import { useState } from "react";
 import { nanoid } from 'nanoid';
 import { StyledForm } from '../../styles/Form.styled';
+import { addTodo, checkAllDone } from '../../slices/todo';
+import { useDispatch, useSelector } from 'react-redux';
 
-function Form({ setTodos }) {
+function Form() {
+
+    const dispatch = useDispatch();
+    const { todos } = useSelector(state => state.todo);
+
     const [todo, setTodo] = useState({
         text: '',
         done: false,
@@ -11,7 +17,7 @@ function Form({ setTodos }) {
 
     const onSubmit = (e) => {
         e.preventDefault();
-        setTodos(todos => [todo, ...todos]);
+        dispatch(addTodo(todo));
         setTodo({
             text: '',
             done: false,
@@ -20,12 +26,13 @@ function Form({ setTodos }) {
     }
 
     const checkAll = () => {
-        setTodos(todos => todos.map(todo => {
+        const t = todos.map(todo => {
             return {
                 ...todo,
                 done: todos[0]?.done === true ? false : true,
             }
-        }));
+        });
+        dispatch(checkAllDone(t));
     }
 
     return(

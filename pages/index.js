@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from "react";
+import { useDispatch } from "react-redux";
+import { initTodos } from "../slices/todo";
 import Image from 'next/image';
 import Head from 'next/head';
 import Form from '../components/Form';
@@ -8,27 +10,21 @@ import Footer from '../components/Footer';
 import { Card, StyledDiv, StyledHeader } from "../styles/Home.styled";
 
 export default function Home({ themeActive, setThemeActive }) {
-  const [todos, setTodos] = useState([]);
+
+  const dispatch = useDispatch();
   const [status, setStatus] = useState('all');
   const mounted = useRef(0);
   mounted.current++;
 
   useEffect(() => {
-    // Get Todos from LS
-    const todos = localStorage.getItem('todos');
+    dispatch(initTodos(localStorage.getItem('todos') !== null ? JSON.parse(localStorage.getItem('todos')) : []));
+    // Get Theme from LS
     const theme = localStorage.getItem('theme');
-    if(todos) {
-      setTodos(JSON.parse(todos));
-    }
     if(theme) {
       setThemeActive(JSON.parse(theme));
     }
   }, []);
-  useEffect(() => {
-    if(mounted.current > 1){
-        localStorage.setItem('todos', JSON.stringify(todos));
-    }
-  }, [todos]);
+
   useEffect(() => {
     if(mounted.current > 1) {
       localStorage.setItem('theme', JSON.stringify(themeActive));
@@ -38,6 +34,7 @@ export default function Home({ themeActive, setThemeActive }) {
   const handleThemeButtonClick = () => {
     setThemeActive((prev) => prev === 'LIGHT' ? 'DARK' : 'LIGHT');
   }
+
   return (
     <StyledDiv themeActive={themeActive}>
       <Head>
@@ -55,9 +52,9 @@ export default function Home({ themeActive, setThemeActive }) {
             )}
           </button>
         </StyledHeader>
-        <Form setTodos={setTodos} />
-        <List todos={todos} setTodos={setTodos} status={status} /> 
-        <Footer todos={todos} setTodos={setTodos} status={status} setStatus={setStatus} />
+        <Form />
+        <List status={status} /> 
+        <Footer status={status} setStatus={setStatus} />
       </Card>
     </StyledDiv>
   )

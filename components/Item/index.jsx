@@ -1,30 +1,35 @@
 import { useEffect, useState } from "react";
 import Image from 'next/image';
 import { StyledButton } from "../../styles/List.styled";
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteTodo, checkDone } from '../../slices/todo';
 
-function Item({ todo, setTodos }) {
+function Item({ todo }) {
     const [isChecked, setIsChecked] = useState(todo.done);
+    const dispatch = useDispatch();
+    
+    const { todos } = useSelector(state => state.todo);
 
     useEffect(() => {
         setIsChecked(todo.done);
     }, [todo]);
 
-    useEffect(() => {
-        setTodos(todos => todos.map(t => {
+    const handleChange = () => {
+        const t = todos.map(t => {
             if(t.id === todo.id) {
                 return {
                     ...todo,
-                    done: isChecked,
+                    done: !isChecked,
                 }
             } else {
                 return t;
             }
-        }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isChecked]);
-
-    const handleChange = () => {
+        });
+        dispatch(checkDone(t));
         setIsChecked(prevState => !prevState);
+    }
+    const handleDelete = () => {
+        dispatch(deleteTodo(todo.id));
     }
 
     return(

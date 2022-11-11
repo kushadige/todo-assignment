@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import { StyledFooter } from "../../styles/Footer.styled";
+import { useDispatch, useSelector } from 'react-redux';
+import { clearCompleted } from '../../slices/todo';
 
-function Footer({ todos, setTodos, status, setStatus }) {
+function Footer({ status, setStatus }) {
     const [active, setActive] = useState(0);
+    const dispatch = useDispatch();
+    const { todos } = useSelector(state => state.todo);
 
     useEffect(() => {
         let counter = 0;
@@ -14,8 +18,9 @@ function Footer({ todos, setTodos, status, setStatus }) {
         setActive(counter);
     }, [todos]);
 
-    const clearCompleted = () => {
-        setTodos(todos => todos.filter(todo => !todo.done));
+    const handleClearCompleted = () => {
+        const t = todos.filter(todo => !todo.done);
+        dispatch(clearCompleted(t));
     }
     const handleClickCompleted = () => {
         setStatus('completed');
@@ -37,7 +42,7 @@ function Footer({ todos, setTodos, status, setStatus }) {
                 <button className={status === 'completed' ? 'active' : ''} onClick={handleClickCompleted}>Completed</button>
             </div>
             <div>
-                <button onClick={clearCompleted}>Clear completed</button>
+                <button onClick={handleClearCompleted}>Clear completed</button>
             </div>
         </StyledFooter>
     );
